@@ -138,8 +138,8 @@ export default {
       ls.setItem("nMax", 3211);
     }
     const leftDrawerOpen = ref(false);
-    const nMin = ref(ls.getItem("nMin"));
-    const nMax = ref(ls.getItem("nMax"));
+    const nMin = ref(Number(ls.getItem("nMin")));
+    const nMax = ref(Number(ls.getItem("nMax")));
 
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;

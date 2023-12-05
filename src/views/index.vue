@@ -18,7 +18,7 @@
         </div>
 
         <!-- 選項部分 -->
-        <div class="column col q-gutter-sm content-start mh300">
+        <div class="column col q-ml-md q-gutter-sm content-start mh300">
           <q-radio
             class="col fit q-pl-md"
             :class="{
@@ -53,9 +53,9 @@ export default {
     const min = Number(ls.getItem("nMin"));
     const randomList = Array(ls.getItem("nMax") - min + 1)
       .fill()
-      .map((_, i) => i + min)
+      .map((_, i) => i + min - 1)
       .sort(() => Math.random() - 0.5);
-    // console.log(randomList);
+    console.log(randomList);
     const listIndex = ref(0);
     return {
       listIndex,
@@ -86,7 +86,7 @@ export default {
     },
     nextQuestion() {
       this.ans = null;
-      if (this.listIndex < this.questions.length - 1) {
+      if (this.listIndex < this.randomList.length - 1) {
         this.listIndex++;
       }
     },
