@@ -47,16 +47,22 @@
 import { ref } from "vue";
 import data3211 from "../assets/data3211.json";
 const ls = window.localStorage;
+const testHistory = JSON.parse(ls.getItem("testHistory")) || [];
+let lastQuestion = null;
 
 export default {
   setup() {
     const min = Number(ls.getItem("nMin"));
+    const tested = new Set(testHistory.map((e) => e.index));
     const randomList = Array(ls.getItem("nMax") - min + 1)
       .fill()
       .map((_, i) => i + min - 1)
+      .filter((e) => !tested.has(e))
       .sort(() => Math.random() - 0.5);
-    console.log(randomList);
+    console.log(tested, randomList);
     const listIndex = ref(0);
+    ls.setItem("status", `目前: 1 / ${randomList.length}`);
+    window.dispatchEvent(new Event("lsStatusChanged"));
     return {
       listIndex,
       randomList,
@@ -74,18 +80,35 @@ export default {
       return this.randomList[this.listIndex];
     },
   },
+  watch: {
+    listIndex() {
+      this.ans = null;
+      ls.setItem(
+        "status",
+        `目前: ${this.listIndex + 1} / ${this.randomList.length}`
+      );
+      window.dispatchEvent(new Event("lsStatusChanged"));
+      window.dispatchEvent(new Event("lsStatusChanged"));
+    },
+  },
   methods: {
     selectOption(option) {
+      if (lastQuestion === this.currentQuestionIndex) return;
+      testHistory.push({
+        index: this.currentQuestionIndex,
+        choose: option,
+        timestamp: Date.now(),
+      });
+      lastQuestion = this.currentQuestionIndex;
+      ls.setItem("testHistory", JSON.stringify(testHistory));
       console.log("選擇了：" + option);
     },
     prevQuestion() {
-      this.ans = null;
       if (this.listIndex > 0) {
         this.listIndex--;
       }
     },
     nextQuestion() {
-      this.ans = null;
       if (this.listIndex < this.randomList.length - 1) {
         this.listIndex++;
       }

@@ -13,6 +13,7 @@
 
         <q-toolbar-title> 金融刷題 </q-toolbar-title>
         <q-space />
+        <div class="q-mx-md" style="font-size: 20px">{{ status }}</div>
         <q-input
           outlined
           type="number"
@@ -94,12 +95,7 @@
             <q-item-label caption>Load</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          clickable
-          target="_blank"
-          rel="noopener"
-          onclick="alert(`還沒做`)"
-        >
+        <q-item clickable target="_blank" rel="noopener" @click="clearHistory">
           <q-item-section avatar>
             <q-icon name="delete_forever" />
           </q-item-section>
@@ -137,7 +133,8 @@ export default {
     if (!ls.getItem("nMax")) {
       ls.setItem("nMax", 3211);
     }
-    const leftDrawerOpen = ref(false);
+    const leftDrawerOpen = ref(false),
+      status = ref("loading...");
     const nMin = ref(Number(ls.getItem("nMin")));
     const nMax = ref(Number(ls.getItem("nMax")));
 
@@ -147,10 +144,23 @@ export default {
 
     return {
       leftDrawerOpen,
+      status,
       toggleLeftDrawer,
       nMin,
       nMax,
     };
+  },
+  methods: {
+    clearHistory() {
+      if (!confirm("確定要清空刷題記錄嗎？")) return;
+      ls.setItem("testHistory", "[]");
+      window.location.reload();
+    },
+  },
+  mounted() {
+    window.addEventListener("lsStatusChanged", () => {
+      this.status = ls.getItem("status");
+    });
   },
   watch: {
     nMin() {
