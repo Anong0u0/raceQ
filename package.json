@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.9",
+    "file-saver": "^2.0.5",
     "quasar": "^2.14.1",
     "vue": "^3.3.8",
     "vue-router": "4"

@@ -2,7 +2,8 @@
   <q-page class="q-pa-xl">
     <div class="column fit content-center">
       <!-- 題目部分 -->
-      <div class="title mh300 flex items-center q-mb-md">
+      <div class="title mh300 flex items-center q-mb-md relative-position">
+        <div class="absolute-top-left q-mx-sm">{{ currentTime }}</div>
         <p class="q-px-xl">
           {{ questions[currentQuestionIndex].題目 }}
         </p>
@@ -33,10 +34,9 @@
             :key="option"
             v-model="ans"
             :val="option"
-            :label="
-              option + '. ' + questions[currentQuestionIndex][`選項${option}`]
-            "
-          />
+            ><b>{{ option + ". " }}</b
+            >{{ questions[currentQuestionIndex][`選項${option}`] }}</q-radio
+          >
         </div>
       </div>
     </div>
@@ -48,7 +48,8 @@ import { ref } from "vue";
 import data3211 from "../assets/data3211.json";
 const ls = window.localStorage;
 const testHistory = JSON.parse(ls.getItem("testHistory")) || [];
-let lastQuestion = null;
+let lastQuestion = null,
+  timeclip = 0;
 
 export default {
   setup() {
@@ -63,9 +64,17 @@ export default {
     const listIndex = ref(0);
     ls.setItem("status", `目前: 1 / ${randomList.length}`);
     window.dispatchEvent(new Event("lsStatusChanged"));
+    const passTimes = ref(0);
+    setInterval(() => {
+      if (++timeclip === 10) {
+        timeclip = 0;
+        passTimes.value++;
+      }
+    }, 100);
     return {
       listIndex,
       randomList,
+      passTimes,
     };
   },
   data() {
@@ -79,6 +88,12 @@ export default {
     currentQuestionIndex() {
       return this.randomList[this.listIndex];
     },
+    currentTime() {
+      return `${String(Math.floor(this.passTimes / 60)).padStart(
+        2,
+        "0"
+      )}:${String(this.passTimes % 60).padStart(2, "0")}`;
+    },
   },
   watch: {
     listIndex() {
@@ -88,7 +103,8 @@ export default {
         `目前: ${this.listIndex + 1} / ${this.randomList.length}`
       );
       window.dispatchEvent(new Event("lsStatusChanged"));
-      window.dispatchEvent(new Event("lsStatusChanged"));
+      timeclip = 0;
+      this.passTimes = 0;
     },
   },
   methods: {
@@ -97,6 +113,7 @@ export default {
       testHistory.push({
         index: this.currentQuestionIndex,
         choose: option,
+        usedTime: this.passTimes,
         timestamp: Date.now(),
       });
       lastQuestion = this.currentQuestionIndex;

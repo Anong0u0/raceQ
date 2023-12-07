@@ -67,12 +67,7 @@
             <q-item-label caption>???</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          clickable
-          target="_blank"
-          rel="noopener"
-          onclick="alert(`還沒做`)"
-        >
+        <q-item clickable target="_blank" rel="noopener" @click="exportHistory">
           <q-item-section avatar>
             <q-icon name="publish" />
           </q-item-section>
@@ -81,12 +76,7 @@
             <q-item-label caption>Save</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item
-          clickable
-          target="_blank"
-          rel="noopener"
-          onclick="alert(`還沒做`)"
-        >
+        <q-item clickable target="_blank" rel="noopener" @click="importHistory">
           <q-item-section avatar>
             <q-icon name="download" />
           </q-item-section>
@@ -124,7 +114,9 @@
 
 <script>
 import { ref } from "vue";
+import * as fs from "file-saver";
 const ls = localStorage;
+
 export default {
   setup() {
     if (!ls.getItem("nMin")) {
@@ -151,6 +143,28 @@ export default {
     };
   },
   methods: {
+    exportHistory() {
+      fs.saveAs(
+        new Blob([ls.getItem("testHistory")], {
+          type: "text/json;charset=utf-8",
+        }),
+        `刷題記錄${new Date().toLocaleString().replace(/[\/:]/g, "-")}.json`
+      );
+    },
+    importHistory() {
+      const file = document.createElement("input");
+      file.type = "file";
+      file.accept = ".json";
+      file.onchange = () => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          ls.setItem("testHistory", reader.result);
+          window.location.reload();
+        };
+        reader.readAsText(file.files[0]);
+      };
+      file.click();
+    },
     clearHistory() {
       if (!confirm("確定要清空刷題記錄嗎？")) return;
       ls.setItem("testHistory", "[]");
