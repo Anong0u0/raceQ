@@ -19,7 +19,7 @@
           type="number"
           :rules="[
             (val) => val > 0 || '最小不能低於1',
-            (val) => val < nMax || `最大不能超過${nMax - 1}`,
+            (val) => val <= nMax || `最大不能超過${nMax}`,
           ]"
           bg-color="white"
           v-model="nMin"
@@ -33,7 +33,7 @@
           outlined
           type="number"
           :rules="[
-            (val) => val > nMin || `最小不能低於${nMin + 1}`,
+            (val) => val >= nMin || `最小不能低於${nMin}`,
             (val) => val < 3212 || '最大不能超過3211',
           ]"
           bg-color="white"
@@ -49,7 +49,7 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered class="bg-grey-2">
       <q-list>
         <q-item-label header>那啥</q-item-label>
-        <q-item clickable rel="noopener" href="/">
+        <q-item clickable rel="noopener" to="/">
           <q-item-section avatar>
             <q-icon name="home" />
           </q-item-section>
@@ -58,13 +58,13 @@
             <q-item-label caption>歡迎回家</q-item-label>
           </q-item-section>
         </q-item>
-        <q-item clickable rel="noopener" onclick="alert(`還沒做`)">
+        <q-item clickable rel="noopener" to="/history">
           <q-item-section avatar>
             <q-icon name="history" />
           </q-item-section>
           <q-item-section>
             <q-item-label>刷題記錄</q-item-label>
-            <q-item-label caption>???</q-item-label>
+            <q-item-label caption>目前至少能動</q-item-label>
           </q-item-section>
         </q-item>
         <q-item clickable target="_blank" rel="noopener" @click="exportHistory">
@@ -94,15 +94,6 @@
             <q-item-label caption>人生重來</q-item-label>
           </q-item-section>
         </q-item>
-        <!--  <q-item clickable target="_blank" rel="noopener" href="https://facebook.quasar.dev">
-          <q-item-section avatar>
-            <q-icon name="public" />
-          </q-item-section>
-          <q-item-section>
-            <q-item-label>Facebook</q-item-label>
-            <q-item-label caption>@QuasarFramework</q-item-label>
-          </q-item-section>
-        </q-item> -->
       </q-list>
     </q-drawer>
 
@@ -148,7 +139,7 @@ export default {
         new Blob([ls.getItem("testHistory")], {
           type: "text/json;charset=utf-8",
         }),
-        `刷題記錄${new Date().toLocaleString().replace(/[\/:]/g, "-")}.json`
+        `刷題記錄${new Date().toLocaleString("sv").replace(/[\/:]/g, "-")}.json`
       );
     },
     importHistory() {

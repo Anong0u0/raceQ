@@ -49,7 +49,8 @@ import data3211 from "../assets/data3211.json";
 const ls = window.localStorage;
 const testHistory = JSON.parse(ls.getItem("testHistory")) || [];
 let lastQuestion = null,
-  timeclip = 0;
+  timeclip = 0,
+  intervalFn;
 
 export default {
   setup() {
@@ -65,24 +66,28 @@ export default {
     ls.setItem("status", `目前: 1 / ${randomList.length}`);
     window.dispatchEvent(new Event("lsStatusChanged"));
     const passTimes = ref(0);
-    setInterval(() => {
-      if (++timeclip === 10) {
-        timeclip = 0;
-        passTimes.value++;
-      }
-    }, 100);
+    const ans = ref(null);
+    const questions = data3211;
+    console.log(questions);
     return {
+      ans,
+      questions,
       listIndex,
       randomList,
       passTimes,
     };
   },
-  data() {
-    console.log(data3211);
-    return {
-      questions: data3211,
-      ans: null,
-    };
+  mounted() {
+    intervalFn = setInterval(() => {
+      if (++timeclip === 10) {
+        timeclip = 0;
+        this.passTimes++;
+      }
+      // console.log(timeclip, this.passTimes);
+    }, 100);
+  },
+  unmounted() {
+    clearInterval(intervalFn);
   },
   computed: {
     currentQuestionIndex() {
