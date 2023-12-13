@@ -13,6 +13,13 @@
 
         <q-toolbar-title> 金融刷題 </q-toolbar-title>
         <q-space />
+        <q-toggle
+          class="q-mx-xs"
+          v-model="randomQuestion"
+          color="green-5"
+          label="亂序出題"
+          dense
+        />
         <div class="q-mx-md" style="font-size: 20px">{{ status }}</div>
         <q-input
           outlined
@@ -116,10 +123,14 @@ export default {
     if (!ls.getItem("nMax")) {
       ls.setItem("nMax", 3211);
     }
+    if (!ls.getItem("randomQuestion")) {
+      ls.setItem("randomQuestion", true);
+    }
     const leftDrawerOpen = ref(false),
       status = ref("loading...");
     const nMin = ref(Number(ls.getItem("nMin")));
     const nMax = ref(Number(ls.getItem("nMax")));
+    const randomQuestion = ref(true);
 
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -131,6 +142,7 @@ export default {
       toggleLeftDrawer,
       nMin,
       nMax,
+      randomQuestion,
     };
   },
   methods: {
@@ -174,8 +186,16 @@ export default {
     nMax() {
       ls.setItem("nMax", this.nMax);
     },
+    randomQuestion() {
+      ls.setItem("randomQuestion", this.randomQuestion);
+      window.dispatchEvent(new Event("randomQuestionChanged"));
+    },
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.q-toggle {
+  font-size: 20px;
+}
+</style>

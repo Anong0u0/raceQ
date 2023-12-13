@@ -4,7 +4,11 @@
     <q-btn class="col-1" :label="123" />
   </div>
   <q-list bordered class="fit">
-    <q-item clickable v-for="(item, index) in history" :key="index">
+    <q-item
+      clickable
+      v-for="(item, index) in [...history].reverse()"
+      :key="index"
+    >
       <q-item-section>
         <q-item-label
           >{{ item.index + 1 }}. {{ questions[item.index].題目 }}</q-item-label

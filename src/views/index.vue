@@ -5,17 +5,28 @@
       <div class="title mh300 flex items-center q-mb-md relative-position">
         <div class="absolute-top-left q-mx-sm">{{ currentTime }}</div>
         <p class="q-px-xl">
-          {{ questions[currentQuestionIndex].題目 }}
+          <b v-if="!randomQuestion">{{ listIndex + 1 }}. </b
+          >{{ questions[currentQuestionIndex].題目 }}
         </p>
       </div>
       <div class="row q-mt-md fit content-center">
         <!-- 上一題下一題按鈕 -->
         <div
-          class="column col col-1 q-px-md q-gutter-xl items-center"
-          style="min-width: 130px"
+          class="column col col-1 q-px-md q-gutter-lg items-center"
+          style="width: 100px"
         >
-          <q-btn class="col" @click="prevQuestion" label="上一題" />
-          <q-btn class="col" @click="nextQuestion" label="下一題" />
+          <q-btn
+            class="col-1 q-px-sm vertical"
+            @click="firstQuestion"
+            icon="skip_previous"
+          />
+          <q-btn class="col q-px-sm" @click="prevQuestion" icon="expand_less" />
+          <q-btn class="col q-px-sm" @click="nextQuestion" icon="expand_more" />
+          <q-btn
+            class="col-1 q-px-sm vertical"
+            @click="lastQuestion"
+            icon="skip_next"
+          />
         </div>
 
         <!-- 選項部分 -->
@@ -69,12 +80,14 @@ export default {
     const ans = ref(null);
     const questions = data3211;
     console.log(questions);
+    const randomQuestion = ref(ls.getItem("randomQuestion") === "true");
     return {
       ans,
       questions,
       listIndex,
       randomList,
       passTimes,
+      randomQuestion,
     };
   },
   mounted() {
@@ -85,13 +98,21 @@ export default {
       }
       // console.log(timeclip, this.passTimes);
     }, 100);
+    window.addEventListener("randomQuestionChanged", () => {
+      const tf = ls.getItem("randomQuestion") === "true";
+      if (tf) this.listIndex = this.randomList.indexOf(this.listIndex);
+      else this.listIndex = this.randomList[this.listIndex];
+      this.randomQuestion = tf;
+    });
   },
   unmounted() {
     clearInterval(intervalFn);
   },
   computed: {
     currentQuestionIndex() {
-      return this.randomList[this.listIndex];
+      return this.randomQuestion
+        ? this.randomList[this.listIndex]
+        : this.listIndex;
     },
     currentTime() {
       return `${String(Math.floor(this.passTimes / 60)).padStart(
@@ -135,6 +156,12 @@ export default {
         this.listIndex++;
       }
     },
+    firstQuestion() {
+      this.listIndex = 0;
+    },
+    lastQuestion() {
+      this.listIndex = this.randomList.length - 1;
+    },
   },
 };
 </script>
@@ -142,6 +169,9 @@ export default {
 <style scoped>
 * {
   text-align: center;
+}
+.vertical {
+  writing-mode: vertical-lr;
 }
 .mh300 {
   min-height: 300px;
