@@ -5,7 +5,7 @@
       <div class="title mh300 flex items-center q-mb-md relative-position">
         <div class="absolute-top-left q-mx-sm">{{ currentTime }}</div>
         <p class="q-px-xl">
-          <b v-if="!randomQuestion">{{ listIndex + 1 }}. </b
+          <b v-if="!randomQuestion">{{ normalList[listIndex] + 1 }}. </b
           >{{ questions[currentQuestionIndex].題目 }}
         </p>
       </div>
@@ -110,6 +110,9 @@ export default {
           this.randomList[this.listIndex]
         );
       this.randomQuestion = tf;
+    });
+    window.addEventListener("indexChanged", (e) => {
+      this.listIndex = Number(e.detail.index) - 1;
     });
   },
   unmounted() {

@@ -20,7 +20,7 @@
           label="亂序出題"
           dense
         />
-        <div class="q-mx-md" style="font-size: 20px">{{ status }}</div>
+        <div class="q-mx-md status" @click="indexChange">{{ status }}</div>
         <q-input
           outlined
           type="number"
@@ -173,6 +173,16 @@ export default {
       ls.setItem("testHistory", "[]");
       window.location.reload();
     },
+    indexChange() {
+      const index = prompt(
+        `輸入跳轉題號(1-${this.status.match(/(?<= \/ )\d+/)})`,
+        this.status.match(/\d+(?= \/ )/)
+      );
+      if (!index) return;
+      window.dispatchEvent(
+        new CustomEvent("indexChanged", { detail: { index: index } })
+      );
+    },
   },
   mounted() {
     window.addEventListener("lsStatusChanged", () => {
@@ -195,7 +205,11 @@ export default {
 </script>
 
 <style scoped>
-.q-toggle {
+.q-toggle,
+.status {
   font-size: 20px;
+}
+.status {
+  cursor: pointer;
 }
 </style>
