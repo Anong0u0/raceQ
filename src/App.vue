@@ -130,7 +130,7 @@ export default {
       status = ref("loading...");
     const nMin = ref(Number(ls.getItem("nMin")));
     const nMax = ref(Number(ls.getItem("nMax")));
-    const randomQuestion = ref(true);
+    const randomQuestion = ref(ls.getItem("randomQuestion") === "true");
 
     function toggleLeftDrawer() {
       leftDrawerOpen.value = !leftDrawerOpen.value;

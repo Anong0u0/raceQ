@@ -67,11 +67,11 @@ export default {
   setup() {
     const min = Number(ls.getItem("nMin"));
     const tested = new Set(testHistory.map((e) => e.index));
-    const randomList = Array(ls.getItem("nMax") - min + 1)
+    const normalList = Array(ls.getItem("nMax") - min + 1)
       .fill()
       .map((_, i) => i + min - 1)
-      .filter((e) => !tested.has(e))
-      .sort(() => Math.random() - 0.5);
+      .filter((e) => !tested.has(e));
+    const randomList = normalList.slice().sort(() => Math.random() - 0.5);
     console.log(tested, randomList);
     const listIndex = ref(0);
     ls.setItem("status", `目前: 1 / ${randomList.length}`);
@@ -85,6 +85,7 @@ export default {
       ans,
       questions,
       listIndex,
+      normalList,
       randomList,
       passTimes,
       randomQuestion,
@@ -100,8 +101,14 @@ export default {
     }, 100);
     window.addEventListener("randomQuestionChanged", () => {
       const tf = ls.getItem("randomQuestion") === "true";
-      if (tf) this.listIndex = this.randomList.indexOf(this.listIndex);
-      else this.listIndex = this.randomList[this.listIndex];
+      if (tf)
+        this.listIndex = this.randomList.indexOf(
+          this.normalList[this.listIndex]
+        );
+      else
+        this.listIndex = this.normalList.indexOf(
+          this.randomList[this.listIndex]
+        );
       this.randomQuestion = tf;
     });
   },
@@ -112,7 +119,7 @@ export default {
     currentQuestionIndex() {
       return this.randomQuestion
         ? this.randomList[this.listIndex]
-        : this.listIndex;
+        : this.normalList[this.listIndex];
     },
     currentTime() {
       return `${String(Math.floor(this.passTimes / 60)).padStart(
@@ -144,7 +151,7 @@ export default {
       });
       lastQuestion = this.currentQuestionIndex;
       ls.setItem("testHistory", JSON.stringify(testHistory));
-      console.log("選擇了：" + option);
+      // console.log("選擇了：" + option);
     },
     prevQuestion() {
       if (this.listIndex > 0) {
