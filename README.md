@@ -1,7 +1,75 @@
-# Vue 3 + Vite
+# raceQ - 簡易刷題網站
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+raceQ 是一個提供題目練習的網站，透過直觀介面，讓使用者可以練習題庫、查看刷題紀錄，並支援刷題歷史的導入與導出。
 
-## Recommended IDE Setup
+## 功能特色
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+- 提供錯誤提示和正確答案，幫助學習。
+- 支援篩選題目範圍。
+- 記錄刷題歷史，包括答題時間和選擇的答案。
+- 支援歷史紀錄的導入與導出。
+
+## 系統需求
+
+- Node v21+
+- pnpm v8+
+
+## 安裝與執行
+
+1. **下載專案**
+   ```bash
+   git clone <專案的 Git URL>
+   cd raceq
+   ```
+
+2. **安裝依賴**
+   ```bash
+   pnpm install
+   ```
+
+3. **開發模式**
+   ```bash
+   pnpm dev
+   ```
+
+4. **建置專案**
+   ```bash
+   pnpm build
+   ```
+
+5. **預覽模式**
+   ```bash
+   pnpm preview
+   ```
+
+## 資料格式
+
+### 題庫
+
+題庫文件位於 `src/assets/data3211.json`，格式如下：
+
+```json
+[
+    {
+        "題目": "...",
+        "選項1": "A...",
+        "選項2": "B...",
+        "選項3": "C...",
+        "選項4": "D...",
+        "正確答案": 2
+    }
+]
+```
+
+### 刷題歷史
+
+歷史紀錄格式如下：
+
+```json
+{
+    "index": 1,
+    "choose": 2,
+    "usedTime": 10,
+    "timestamp": 1691776437223
+}
+```
