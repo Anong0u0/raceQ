@@ -41,7 +41,7 @@
           type="number"
           :rules="[
             (val) => val >= nMin || `最小不能低於${nMin}`,
-            (val) => val < 3212 || '最大不能超過3211',
+            (val) => val < dataLength+1 || `最大不能超過${dataLength}`,
           ]"
           bg-color="white"
           v-model="nMax"
@@ -113,15 +113,17 @@
 <script>
 import { ref } from "vue";
 import * as fs from "file-saver";
+import data from "./assets/data.json";
 const ls = localStorage;
 
 export default {
   setup() {
+    const dataLength = data.length;
     if (!ls.getItem("nMin")) {
       ls.setItem("nMin", 1);
     }
     if (!ls.getItem("nMax")) {
-      ls.setItem("nMax", 3211);
+      ls.setItem("nMax", dataLength);
     }
     if (!ls.getItem("randomQuestion")) {
       ls.setItem("randomQuestion", true);
@@ -137,6 +139,7 @@ export default {
     }
 
     return {
+      dataLength,
       leftDrawerOpen,
       status,
       toggleLeftDrawer,

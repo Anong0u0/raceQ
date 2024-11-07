@@ -36,12 +36,12 @@
 
 <script>
 import { ref } from "vue";
-import data3211 from "../assets/data3211.json";
+import data from "../assets/data.json";
 const ls = localStorage;
 
 export default {
   setup() {
-    const questions = data3211;
+    const questions = data;
     const history = JSON.parse(ls.getItem("testHistory"));
     console.log(history);
     return {

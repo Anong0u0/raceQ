@@ -56,7 +56,7 @@
 
 <script>
 import { ref } from "vue";
-import data3211 from "../assets/data3211.json";
+import data from "../assets/data.json";
 const ls = window.localStorage;
 const testHistory = JSON.parse(ls.getItem("testHistory")) || [];
 let lastQuestion = null,
@@ -74,11 +74,11 @@ export default {
     const randomList = normalList.slice().sort(() => Math.random() - 0.5);
     console.log(tested, randomList);
     const listIndex = ref(0);
-    ls.setItem("status", `目前: 1 / ${randomList.length}`);
+    ls.setItem("status", `目前: 1 / ${randomList.length}${randomList.length<data.length?" ("+data.length+")":""}`);
     window.dispatchEvent(new Event("lsStatusChanged"));
     const passTimes = ref(0);
     const ans = ref(null);
-    const questions = data3211;
+    const questions = data;
     console.log(questions);
     const randomQuestion = ref(ls.getItem("randomQuestion") === "true");
     return {
@@ -136,7 +136,7 @@ export default {
       this.ans = null;
       ls.setItem(
         "status",
-        `目前: ${this.listIndex + 1} / ${this.randomList.length}`
+        `目前: ${this.listIndex + 1} / ${this.randomList.length}${this.randomList.length<data.length?" ("+data.length+")":""}`
       );
       window.dispatchEvent(new Event("lsStatusChanged"));
       timeclip = 0;
